@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>FIF HARISH Admin Panel</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root{--bg:#0b1220;--card:#121b2d;--text:#f8fafc;--muted:#94a3b8;--primary:#16a34a;--danger:#dc2626;--info:#2563eb;--warning:#d97706;--purple:#7c3aed;--border:#26344d}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;padding:16px 14px 30px}
+    .wrap{max-width:560px;margin:auto}.title{font-size:24px;font-weight:800;text-align:center;margin:8px 0 4px}.sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:18px}
+    .status{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:14px;line-height:1.75}
+    .status b{color:#fff}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{border:0;border-radius:14px;color:#fff;font-weight:800;font-size:14px;padding:14px 10px;min-height:54px;cursor:pointer;box-shadow:0 5px 12px #0004}.btn:active{transform:scale(.98)}
+    .primary{background:var(--primary)}.danger{background:var(--danger)}.info{background:var(--info)}.warning{background:var(--warning)}.purple{background:var(--purple)}.gray{background:#475569}
+    .section{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px;margin-top:14px}.section h2{font-size:16px;margin:0 0 12px}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)}.row:last-child{border-bottom:0}.row label{font-size:13px;color:#e2e8f0}.color{width:52px;height:38px;padding:2px;border:0;background:transparent}.hex{width:92px;background:#0f172a;color:#fff;border:1px solid var(--border);border-radius:9px;padding:8px;text-transform:uppercase}
+    .colorline{display:flex;align-items:center;gap:8px}.hint{color:var(--muted);font-size:12px;line-height:1.5;margin-top:10px}.full{width:100%;margin-top:10px}.pill{display:inline-block;padding:3px 8px;border-radius:999px;background:#1e293b;color:#cbd5e1;font-size:11px}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="title">🔒 FIF HARISH ADMIN</div>
+  <div class="sub">Telegram Web App • real colored buttons</div>
+
+  <div class="status">
+    <div>🚨 Master Lock: <b id="lockText">Ready</b></div>
+    <div>🌙 Night Mode: <b id="nightText">ON</b></div>
+    <div>🗑️ Post Delete: <b id="deleteText">ON</b></div>
+    <div>⚙️ Maintenance: <b id="maintenanceText">OFF</b></div>
+  </div>
+
+  <div class="grid">
+    <button class="btn primary" id="lockBtn" onclick="send('lock')">🔐 Toggle Lock</button>
+    <button class="btn warning" onclick="send('maintenance')">⚙️ Maintenance</button>
+    <button class="btn danger" onclick="send('post_delete_toggle')">🗑️ Post Delete</button>
+    <button class="btn purple" onclick="send('night_toggle')">🌙 Night Mode</button>
+    <button class="btn info" onclick="send('stats')">📊 Bot Stats</button>
+    <button class="btn gray" onclick="send('refresh')">💫 Refresh</button>
+  </div>
+
+  <div class="section">
+    <h2>📊 Daily Limits</h2>
+    <div class="grid">
+      <button class="btn info" onclick="send('setlimit',{value:1})">User 1</button>
+      <button class="btn info" onclick="send('setlimit',{value:2})">User 2</button>
+      <button class="btn info" onclick="send('setlimit',{value:3})">User 3</button>
+      <button class="btn info" onclick="send('setlimit',{value:5})">User 5</button>
+      <button class="btn info" onclick="send('setlimit',{value:10})">User 10</button>
+      <button class="btn danger" onclick="send('setlimit',{value:0})">User OFF</button>
+      <button class="btn primary" onclick="send('setchannelimit',{value:1})">Channel 1</button>
+      <button class="btn primary" onclick="send('setchannelimit',{value:2})">Channel 2</button>
+      <button class="btn primary" onclick="send('setchannelimit',{value:5})">Channel 5</button>
+      <button class="btn primary" onclick="send('setchannelimit',{value:10})">Channel 10</button>
+      <button class="btn primary" onclick="send('setchannelimit',{value:20})">Channel 20</button>
+      <button class="btn danger" onclick="send('setchannelimit',{value:0})">Channel OFF</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🎨 Button Colors</h2>
+    <div class="row"><label>Primary</label><div class="colorline"><input class="color" id="primary" type="color" value="#16a34a"><input class="hex" id="primaryHex" value="#16A34A" maxlength="7"></div></div>
+    <div class="row"><label>Danger</label><div class="colorline"><input class="color" id="danger" type="color" value="#dc2626"><input class="hex" id="dangerHex" value="#DC2626" maxlength="7"></div></div>
+    <div class="row"><label>Info</label><div class="colorline"><input class="color" id="info" type="color" value="#2563eb"><input class="hex" id="infoHex" value="#2563EB" maxlength="7"></div></div>
+    <div class="row"><label>Warning</label><div class="colorline"><input class="color" id="warning" type="color" value="#d97706"><input class="hex" id="warningHex" value="#D97706" maxlength="7"></div></div>
+    <div class="row"><label>Purple</label><div class="colorline"><input class="color" id="purple" type="color" value="#7c3aed"><input class="hex" id="purpleHex" value="#7C3AED" maxlength="7"></div></div>
+    <button class="btn primary full" onclick="saveColors()">💾 Save My Colors</button>
+    <div class="hint">Pick any color or enter any 6-digit HEX value. These are real Web App button backgrounds, not images.</div>
+  </div>
+
+  <button class="btn gray full" onclick="Telegram.WebApp.close()">✕ Close</button>
+</div>
+<script>
+  const tg=window.Telegram.WebApp; tg.ready(); tg.expand();
+  const keys=['primary','danger','info','warning','purple'];
+  function validHex(v){return /^#[0-9a-fA-F]{6}$/.test(v)}
+  function setColor(k,v){if(!validHex(v))return; document.documentElement.style.setProperty('--'+k,v); document.getElementById(k).value=v; document.getElementById(k+'Hex').value=v.toUpperCase(); localStorage.setItem('color_'+k,v)}
+  keys.forEach(k=>{
+    const saved=localStorage.getItem('color_'+k); if(saved&&validHex(saved)) setColor(k,saved);
+    document.getElementById(k).addEventListener('input',e=>setColor(k,e.target.value));
+    document.getElementById(k+'Hex').addEventListener('change',e=>{let v=e.target.value.trim();if(v[0]!=='#')v='#'+v;if(validHex(v))setColor(k,v);else e.target.value=document.getElementById(k).value.toUpperCase()});
+  });
+  function send(action,extra={}){tg.HapticFeedback?.impactOccurred('light');tg.sendData(JSON.stringify({action,...extra}));}
+  function saveColors(){const colors={};keys.forEach(k=>colors[k]=document.getElementById(k).value.toUpperCase());keys.forEach(k=>localStorage.setItem('color_'+k,colors[k]));send('save_colors',{colors});}
+</script>
+</body>
+</html>
